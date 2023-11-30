@@ -6,9 +6,9 @@ unsigned long desiredInterval_s = 1;        // 1 min = 60 s
 unsigned long desiredInterval_ms = 1000;    // 1 s   = 1_000 ms 
 unsigned long desiredInterval_us = 1000000;
 
-unsigned int interSampleDelay = 20; 
-unsigned int interAverageDelay = 1000; 
-unsigned int numSamples = 12;
+unsigned int interSampleDelay = 50; 
+unsigned int interAverageDelay = 1500; 
+unsigned int numSamples = 20;
 
 
 void myDelay_us(unsigned long us)                      // us: duration (use instaed of block func delay())

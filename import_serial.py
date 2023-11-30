@@ -1,35 +1,51 @@
 import serial
 import time
+from datetime import datetime
 
 # Set up the serial line
 port = 'COM5'
-ser = serial.Serial(port, 115200)  
+ser = serial.Serial(port, 115200)
 ser.flushInput()
 
-# Open a file for writing
+# Function to create a new file with a timestamp in the name
+def create_new_file():
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_")
+    filename = f'serial_data_{timestamp}.txt'
+    return open(filename, 'w')
 
-with open('serial_data.txt', 'w') as file:
-    while True:
-        try:
-            # Read a line from the serial port
-            ser_bytes = ser.readline()
+# Initialize variables
+line_count = 0
+file = create_new_file()
 
-            # Decode bytes to string
-            decoded_bytes = ser_bytes.decode('utf-8').rstrip()
+while True:
+    try:
+        # Read a line from the serial port
+        ser_bytes = ser.readline()
 
-            # Write to the file
-            file.write(decoded_bytes + '\n')
-            file.flush()  # Ensure data is written to the file
+        # Decode bytes to string
+        decoded_bytes = ser_bytes.decode('utf-8').rstrip()
 
-            # Optional: print to console
-            print(decoded_bytes)
+        # Write to the file
+        file.write(decoded_bytes + '\n')
+        file.flush()  # Ensure data is written to the file
+        line_count += 1
 
-        except KeyboardInterrupt:
-            print("Keyboard Interrupt: Exiting...")
-            break
-        except Exception as e:
-            print("Error:", e)
-            break
+        # Optional: print to console
+        # print(decoded_bytes)
+        
+        # Check if line count has reached a million
+        if line_count >= 1000000:
+            file.close()  # Close the current file
+            file = create_new_file()  # Open a new file with a new timestamp
+            line_count = 0  # Reset line count
 
-# Close the serial connection
+    except KeyboardInterrupt:
+        print("Keyboard Interrupt: Exiting...")
+        break
+    except Exception as e:
+        print("Error:", e)
+        break
+
+# Close the current file and the serial connection
+file.close()
 ser.close()
