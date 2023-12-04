@@ -1,6 +1,7 @@
-import serial
+import serial.tools.list_ports
 import time
 from datetime import datetime
+import struct
 
 # # Set up the serial line
 # port = 'COM5'
